@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/jstree/style.min.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jstree.min.js"></script>
+</head>
+<body>
+
+<div style="width: 100%">
+    <div style="float: left;width: 60%">
+        <div id="jstree"></div>
+    </div>
+    <div style="float: right;width: 40%" id="event_result">
+
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    $('#jstree').on('changed.jstree', function (e, data) {
+        var text = data.instance.get_node(data.selected[0]).text
+
+        $.get("http://localhost:8080/data", {"text":text}, function(res) {
+            console.log(res)
+            $('#event_result').html('node info : ' + res);
+        });
+
+        //console.log(data)
+//        var i, j, r = [];
+//        for(i = 0, j = data.selected.length; i < j; i++) {
+//            r.push(data.instance.get_node(data.selected[i]).text);
+//        }
+
+    }).jstree({
+        'core' : {
+            'data' : {
+                'url' : function(node) {
+                    return "http://localhost:8080/hello";
+                },
+                'data' : function(node) {
+                    return { "id" : node.id, "text" : node.text };
+                }
+            },
+            'dataType' : 'json'
+        }
+    });
+</script>
+</html>
